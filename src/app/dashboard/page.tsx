@@ -6,14 +6,23 @@ import { listingsAPI } from '@/lib/listings';
 import { Home, QrCode, Eye, TrendingUp, Plus, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
+
+export default function DashboardPage() {
+  const { user } = useAuthStore();
+  const [stats, setStats] = useState({ active: '0', draft: '0', sold: '0', total: '0', total_views: '0' });
+  
+  useEffect(() => {
+    listingsAPI.getStats().then(res => setStats(res.data.data.stats)).catch(() => {});
+  }, []);
+  
   const STATS = [
     { label: 'Active Listings', value: stats.active, max: '5', icon: Home, color: '#00D4C8', hint: `${5 - parseInt(stats.active)} remaining on Free plan` },
     { label: 'QR Codes', value: stats.active, icon: QrCode, color: '#FFB830', hint: 'Generated so far' },
     { label: 'Total Views', value: stats.total_views, icon: Eye, color: '#A78BFA', hint: 'Across all listings' },
     { label: 'Draft Listings', value: stats.draft, icon: TrendingUp, color: '#2ECC8A', hint: 'Saved as draft' },
   ];
-
-const QUICK_ACTIONS = [
+  
+  const QUICK_ACTIONS = [
   {
     label: 'Add Listing',
     description: 'Create a new property listing',
@@ -28,23 +37,16 @@ const QUICK_ACTIONS = [
     icon: QrCode,
     color: '#FFB830',
   },
-];
-
-const NEXT_STEPS = [
+  ];
+  
+  const NEXT_STEPS = [
   { step: '1', label: 'Add your first listing', done: false, href: '/dashboard/listings/new' },
   { step: '2', label: 'Generate a QR code', done: false, href: '/dashboard/qr' },
   { step: '3', label: 'Share QR on property boards', done: false, href: '#' },
   { step: '4', label: 'Track your first scan', done: false, href: '/dashboard/analytics' },
-];
+  ];
 
-export default function DashboardPage() {
-  const { user } = useAuthStore();
-  const [stats, setStats] = useState({ active: '0', draft: '0', sold: '0', total: '0', total_views: '0' });
-
-  useEffect(() => {
-    listingsAPI.getStats().then(res => setStats(res.data.data.stats)).catch(() => {});
-  }, []);
-
+  
   const hour = new Date().getHours();
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
   const firstName = user?.name?.split(' ')[0] || 'Agent';
@@ -67,18 +69,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {STATS.map(({ label, value, max, icon: Icon, color, hint }) => (
           <div key={label} className="bg-[#111C28] border border-[#1A2D40] p-5">
             <div className="flex items-start justify-between mb-4">
-              <div className="w-9 h-9 flex items-center justify-center" style={{ background: `${color}15` }}>
+              <div className="flex items-center justify-center w-9 h-9" style={{ background: `${color}15` }}>
                 <Icon size={18} style={{ color }} />
               </div>
               {max && (
                 <span className="text-[10px] text-[#4A6580] font-mono">/ {max}</span>
               )}
             </div>
-            <div className="text-3xl font-black text-white mb-1">{value}</div>
+            <div className="mb-1 text-3xl font-black text-white">{value}</div>
             <div className="text-xs font-semibold text-white mb-0.5">{label}</div>
             <div className="text-[11px] text-[#4A6580]">{hint}</div>
           </div>
@@ -86,7 +88,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Two column layout */}
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid gap-6 lg:grid-cols-2">
 
         {/* Getting started checklist */}
         <div className="bg-[#111C28] border border-[#1A2D40] p-6">
@@ -135,7 +137,7 @@ export default function DashboardPage() {
                 style={{ ['--hover-color' as string]: color }}
               >
                 <div
-                  className="w-10 h-10 flex items-center justify-center flex-shrink-0"
+                  className="flex items-center justify-center flex-shrink-0 w-10 h-10"
                   style={{ background: `${color}15` }}
                 >
                   <Icon size={20} style={{ color }} />
