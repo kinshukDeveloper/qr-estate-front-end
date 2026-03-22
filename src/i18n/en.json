@@ -1,0 +1,101 @@
+{
+  "locale": "en",
+  "localeName": "English",
+  "dir": "ltr",
+  "font": "system-ui",
+
+  "status": {
+    "available": "Available",
+    "sold": "Sold",
+    "rented": "Rented",
+    "draft": "Draft",
+    "inactive": "Inactive"
+  },
+  "propertyType": {
+    "apartment": "Apartment",
+    "villa": "Villa",
+    "house": "House",
+    "plot": "Plot / Land",
+    "commercial": "Commercial",
+    "pg": "PG / Hostel"
+  },
+  "listingType": {
+    "sale": "For Sale",
+    "rent": "For Rent"
+  },
+  "furnishing": {
+    "unfurnished": "Unfurnished",
+    "semi-furnished": "Semi-Furnished",
+    "fully-furnished": "Fully Furnished"
+  },
+  "facing": {
+    "North": "North",
+    "South": "South",
+    "East": "East",
+    "West": "West",
+    "North-East": "North-East",
+    "North-West": "North-West",
+    "South-East": "South-East",
+    "South-West": "South-West"
+  },
+  "price": {
+    "negotiable": "Negotiable",
+    "perMonth": "/month",
+    "lakh": "Lakh",
+    "crore": "Crore"
+  },
+  "specs": {
+    "beds": "Beds",
+    "baths": "Baths",
+    "area": "Area",
+    "floor": "Floor"
+  },
+  "sections": {
+    "propertyDetails": "Property Details",
+    "aboutProperty": "About this Property",
+    "amenities": "Amenities",
+    "location": "Location",
+    "listedBy": "Listed By",
+    "sendEnquiry": "Send Enquiry"
+  },
+  "details": {
+    "type": "Type",
+    "purpose": "Purpose",
+    "furnishing": "Furnishing",
+    "facing": "Facing",
+    "area": "Area",
+    "floor": "Floor",
+    "of": "of",
+    "propertyCode": "Property Code"
+  },
+  "agent": {
+    "reraLabel": "RERA",
+    "callAgent": "Call Agent",
+    "whatsapp": "WhatsApp"
+  },
+  "enquiry": {
+    "namePlaceholder": "Your name",
+    "phonePlaceholder": "Mobile number *",
+    "messagePlaceholder": "Your message (optional)",
+    "submit": "Send Enquiry",
+    "submitting": "Sending...",
+    "successTitle": "Enquiry Sent!",
+    "successDesc": "The agent will contact you shortly.",
+    "errorMsg": "Something went wrong. Please try again."
+  },
+  "stats": {
+    "views": "views",
+    "qrScans": "QR scans",
+    "share": "Share",
+    "copied": "Link copied!"
+  },
+  "banner": {
+    "sold": "This property has been SOLD. Similar properties may be available — contact the agent.",
+    "rented": "This property has been RENTED. Similar properties may be available — contact the agent.",
+    "removed": "This property has been removed. Contact the agent for availability."
+  },
+  "noPhotos": "No photos available",
+  "noContact": "Contact information not available",
+  "poweredBy": "Powered by",
+  "tagline": "India's QR-Native Listing Platform"
+}

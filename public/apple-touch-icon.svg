@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <rect width="180" height="180" fill="#080F17" rx="40"/>
+  <!-- Top-left finder -->
+  <rect x="14" y="14" width="64" height="64" stroke="#00D4C8" stroke-width="6" fill="none"/>
+  <rect x="26" y="26" width="40" height="40" fill="#00D4C8"/>
+  <!-- Top-right finder -->
+  <rect x="102" y="14" width="64" height="64" stroke="#00D4C8" stroke-width="6" fill="none"/>
+  <rect x="114" y="26" width="40" height="40" fill="#00D4C8"/>
+  <!-- Bottom-left finder -->
+  <rect x="14" y="102" width="64" height="64" stroke="#00D4C8" stroke-width="6" fill="none"/>
+  <rect x="26" y="114" width="40" height="40" fill="#00D4C8"/>
+  <!-- Data modules -->
+  <rect x="102" y="102" width="22" height="22" fill="#00D4C8"/>
+  <rect x="132" y="102" width="22" height="22" fill="#00D4C8"/>
+  <rect x="102" y="132" width="22" height="22" fill="#007A74"/>
+  <rect x="132" y="132" width="34" height="34" fill="#00D4C8"/>
+</svg>

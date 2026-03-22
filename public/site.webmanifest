@@ -1,0 +1,22 @@
+{
+  "name": "QR Estate",
+  "short_name": "QR Estate",
+  "description": "India's QR-native property listing platform",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080F17",
+  "theme_color": "#00D4C8",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}

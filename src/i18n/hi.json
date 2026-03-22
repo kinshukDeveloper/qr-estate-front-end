@@ -1,0 +1,101 @@
+{
+  "locale": "hi",
+  "localeName": "हिन्दी",
+  "dir": "ltr",
+  "font": "'Noto Sans Devanagari', system-ui",
+
+  "status": {
+    "available": "उपलब्ध",
+    "sold": "बिक गया",
+    "rented": "किराये पर",
+    "draft": "ड्राफ्ट",
+    "inactive": "निष्क्रिय"
+  },
+  "propertyType": {
+    "apartment": "अपार्टमेंट",
+    "villa": "विला",
+    "house": "मकान",
+    "plot": "प्लॉट / ज़मीन",
+    "commercial": "व्यावसायिक",
+    "pg": "पीजी / हॉस्टल"
+  },
+  "listingType": {
+    "sale": "बिक्री के लिए",
+    "rent": "किराये के लिए"
+  },
+  "furnishing": {
+    "unfurnished": "बिना फर्नीचर",
+    "semi-furnished": "अर्ध-सुसज्जित",
+    "fully-furnished": "पूरी तरह सुसज्जित"
+  },
+  "facing": {
+    "North": "उत्तर",
+    "South": "दक्षिण",
+    "East": "पूर्व",
+    "West": "पश्चिम",
+    "North-East": "उत्तर-पूर्व",
+    "North-West": "उत्तर-पश्चिम",
+    "South-East": "दक्षिण-पूर्व",
+    "South-West": "दक्षिण-पश्चिम"
+  },
+  "price": {
+    "negotiable": "बातचीत योग्य",
+    "perMonth": "/माह",
+    "lakh": "लाख",
+    "crore": "करोड़"
+  },
+  "specs": {
+    "beds": "शयनकक्ष",
+    "baths": "स्नानघर",
+    "area": "क्षेत्रफल",
+    "floor": "मंज़िल"
+  },
+  "sections": {
+    "propertyDetails": "संपत्ति विवरण",
+    "aboutProperty": "इस संपत्ति के बारे में",
+    "amenities": "सुविधाएँ",
+    "location": "स्थान",
+    "listedBy": "लिस्ट किया द्वारा",
+    "sendEnquiry": "जानकारी भेजें"
+  },
+  "details": {
+    "type": "प्रकार",
+    "purpose": "उद्देश्य",
+    "furnishing": "फर्निशिंग",
+    "facing": "दिशा",
+    "area": "क्षेत्रफल",
+    "floor": "मंज़िल",
+    "of": "में से",
+    "propertyCode": "प्रॉपर्टी कोड"
+  },
+  "agent": {
+    "reraLabel": "रेरा",
+    "callAgent": "एजेंट को कॉल करें",
+    "whatsapp": "व्हाट्सएप"
+  },
+  "enquiry": {
+    "namePlaceholder": "आपका नाम",
+    "phonePlaceholder": "मोबाइल नंबर *",
+    "messagePlaceholder": "आपका संदेश (वैकल्पिक)",
+    "submit": "जानकारी भेजें",
+    "submitting": "भेजा जा रहा है...",
+    "successTitle": "जानकारी भेजी गई!",
+    "successDesc": "एजेंट जल्द ही आपसे संपर्क करेगा।",
+    "errorMsg": "कुछ गलत हुआ। कृपया पुनः प्रयास करें।"
+  },
+  "stats": {
+    "views": "व्यूज़",
+    "qrScans": "QR स्कैन",
+    "share": "शेयर करें",
+    "copied": "लिंक कॉपी हुआ!"
+  },
+  "banner": {
+    "sold": "यह संपत्ति बिक चुकी है। इसी तरह की संपत्तियाँ उपलब्ध हो सकती हैं — एजेंट से संपर्क करें।",
+    "rented": "यह संपत्ति किराये पर जा चुकी है। एजेंट से संपर्क करें।",
+    "removed": "यह संपत्ति हटा दी गई है। एजेंट से उपलब्धता जानें।"
+  },
+  "noPhotos": "कोई तस्वीर नहीं",
+  "noContact": "संपर्क जानकारी उपलब्ध नहीं",
+  "poweredBy": "द्वारा संचालित",
+  "tagline": "भारत का QR-नेटिव लिस्टिंग प्लेटफ़ॉर्म"
+}

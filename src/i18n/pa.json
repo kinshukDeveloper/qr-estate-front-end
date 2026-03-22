@@ -1,0 +1,101 @@
+{
+  "locale": "pa",
+  "localeName": "ਪੰਜਾਬੀ",
+  "dir": "ltr",
+  "font": "'Noto Sans Gurmukhi', system-ui",
+
+  "status": {
+    "available": "ਉਪਲਬਧ",
+    "sold": "ਵਿਕ ਗਿਆ",
+    "rented": "ਕਿਰਾਏ 'ਤੇ",
+    "draft": "ਡਰਾਫਟ",
+    "inactive": "ਅਕਿਰਿਆਸ਼ੀਲ"
+  },
+  "propertyType": {
+    "apartment": "ਅਪਾਰਟਮੈਂਟ",
+    "villa": "ਵਿਲਾ",
+    "house": "ਮਕਾਨ",
+    "plot": "ਪਲਾਟ / ਜ਼ਮੀਨ",
+    "commercial": "ਵਪਾਰਕ",
+    "pg": "ਪੀਜੀ / ਹੋਸਟਲ"
+  },
+  "listingType": {
+    "sale": "ਵਿਕਰੀ ਲਈ",
+    "rent": "ਕਿਰਾਏ ਲਈ"
+  },
+  "furnishing": {
+    "unfurnished": "ਬਿਨਾਂ ਫਰਨੀਚਰ",
+    "semi-furnished": "ਅਰਧ-ਸਜਾਇਆ",
+    "fully-furnished": "ਪੂਰੀ ਤਰ੍ਹਾਂ ਸਜਾਇਆ"
+  },
+  "facing": {
+    "North": "ਉੱਤਰ",
+    "South": "ਦੱਖਣ",
+    "East": "ਪੂਰਬ",
+    "West": "ਪੱਛਮ",
+    "North-East": "ਉੱਤਰ-ਪੂਰਬ",
+    "North-West": "ਉੱਤਰ-ਪੱਛਮ",
+    "South-East": "ਦੱਖਣ-ਪੂਰਬ",
+    "South-West": "ਦੱਖਣ-ਪੱਛਮ"
+  },
+  "price": {
+    "negotiable": "ਗੱਲਬਾਤ ਯੋਗ",
+    "perMonth": "/ਮਹੀਨਾ",
+    "lakh": "ਲੱਖ",
+    "crore": "ਕਰੋੜ"
+  },
+  "specs": {
+    "beds": "ਕਮਰੇ",
+    "baths": "ਬਾਥਰੂਮ",
+    "area": "ਖੇਤਰਫਲ",
+    "floor": "ਮੰਜ਼ਿਲ"
+  },
+  "sections": {
+    "propertyDetails": "ਜਾਇਦਾਦ ਵੇਰਵੇ",
+    "aboutProperty": "ਇਸ ਜਾਇਦਾਦ ਬਾਰੇ",
+    "amenities": "ਸਹੂਲਤਾਂ",
+    "location": "ਸਥਾਨ",
+    "listedBy": "ਦੁਆਰਾ ਸੂਚੀਬੱਧ",
+    "sendEnquiry": "ਜਾਣਕਾਰੀ ਭੇਜੋ"
+  },
+  "details": {
+    "type": "ਕਿਸਮ",
+    "purpose": "ਮਕਸਦ",
+    "furnishing": "ਫਰਨਿਸ਼ਿੰਗ",
+    "facing": "ਦਿਸ਼ਾ",
+    "area": "ਖੇਤਰਫਲ",
+    "floor": "ਮੰਜ਼ਿਲ",
+    "of": "ਵਿੱਚੋਂ",
+    "propertyCode": "ਜਾਇਦਾਦ ਕੋਡ"
+  },
+  "agent": {
+    "reraLabel": "ਰੇਰਾ",
+    "callAgent": "ਏਜੰਟ ਨੂੰ ਕਾਲ ਕਰੋ",
+    "whatsapp": "ਵਟਸਐਪ"
+  },
+  "enquiry": {
+    "namePlaceholder": "ਤੁਹਾਡਾ ਨਾਮ",
+    "phonePlaceholder": "ਮੋਬਾਈਲ ਨੰਬਰ *",
+    "messagePlaceholder": "ਤੁਹਾਡਾ ਸੁਨੇਹਾ (ਵਿਕਲਪਿਕ)",
+    "submit": "ਜਾਣਕਾਰੀ ਭੇਜੋ",
+    "submitting": "ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...",
+    "successTitle": "ਜਾਣਕਾਰੀ ਭੇਜੀ ਗਈ!",
+    "successDesc": "ਏਜੰਟ ਜਲਦੀ ਤੁਹਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੇਗਾ।",
+    "errorMsg": "ਕੁਝ ਗਲਤ ਹੋਇਆ। ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।"
+  },
+  "stats": {
+    "views": "ਵਿਊ",
+    "qrScans": "QR ਸਕੈਨ",
+    "share": "ਸ਼ੇਅਰ ਕਰੋ",
+    "copied": "ਲਿੰਕ ਕਾਪੀ ਹੋਇਆ!"
+  },
+  "banner": {
+    "sold": "ਇਹ ਜਾਇਦਾਦ ਵਿਕ ਚੁੱਕੀ ਹੈ। ਏਜੰਟ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+    "rented": "ਇਹ ਜਾਇਦਾਦ ਕਿਰਾਏ 'ਤੇ ਜਾ ਚੁੱਕੀ ਹੈ। ਏਜੰਟ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।",
+    "removed": "ਇਹ ਜਾਇਦਾਦ ਹਟਾ ਦਿੱਤੀ ਗਈ ਹੈ। ਉਪਲਬਧਤਾ ਲਈ ਏਜੰਟ ਨਾਲ ਸੰਪਰਕ ਕਰੋ।"
+  },
+  "noPhotos": "ਕੋਈ ਫੋਟੋ ਨਹੀਂ",
+  "noContact": "ਸੰਪਰਕ ਜਾਣਕਾਰੀ ਉਪਲਬਧ ਨਹੀਂ",
+  "poweredBy": "ਦੁਆਰਾ ਸੰਚਾਲਿਤ",
+  "tagline": "ਭਾਰਤ ਦਾ QR-ਨੇਟਿਵ ਲਿਸਟਿੰਗ ਪਲੇਟਫਾਰਮ"
+}

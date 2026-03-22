@@ -1,0 +1,101 @@
+{
+  "locale": "mr",
+  "localeName": "मराठी",
+  "dir": "ltr",
+  "font": "'Noto Sans Devanagari', system-ui",
+
+  "status": {
+    "available": "उपलब्ध",
+    "sold": "विकले गेले",
+    "rented": "भाड्याने दिले",
+    "draft": "मसुदा",
+    "inactive": "निष्क्रिय"
+  },
+  "propertyType": {
+    "apartment": "अपार्टमेंट",
+    "villa": "व्हिला",
+    "house": "घर",
+    "plot": "भूखंड / जमीन",
+    "commercial": "व्यावसायिक",
+    "pg": "पीजी / वसतिगृह"
+  },
+  "listingType": {
+    "sale": "विक्रीसाठी",
+    "rent": "भाड्यासाठी"
+  },
+  "furnishing": {
+    "unfurnished": "बिनफर्निचर",
+    "semi-furnished": "अर्ध-सुसज्जित",
+    "fully-furnished": "पूर्णपणे सुसज्जित"
+  },
+  "facing": {
+    "North": "उत्तर",
+    "South": "दक्षिण",
+    "East": "पूर्व",
+    "West": "पश्चिम",
+    "North-East": "ईशान्य",
+    "North-West": "वायव्य",
+    "South-East": "आग्नेय",
+    "South-West": "नैऋत्य"
+  },
+  "price": {
+    "negotiable": "वाटाघाटी शक्य",
+    "perMonth": "/महिना",
+    "lakh": "लाख",
+    "crore": "कोटी"
+  },
+  "specs": {
+    "beds": "शयनकक्ष",
+    "baths": "स्नानगृह",
+    "area": "क्षेत्रफळ",
+    "floor": "मजला"
+  },
+  "sections": {
+    "propertyDetails": "मालमत्ता तपशील",
+    "aboutProperty": "या मालमत्तेबद्दल",
+    "amenities": "सुविधा",
+    "location": "स्थान",
+    "listedBy": "नोंदणी केलेले",
+    "sendEnquiry": "चौकशी पाठवा"
+  },
+  "details": {
+    "type": "प्रकार",
+    "purpose": "उद्देश",
+    "furnishing": "फर्निशिंग",
+    "facing": "दिशा",
+    "area": "क्षेत्रफळ",
+    "floor": "मजला",
+    "of": "पैकी",
+    "propertyCode": "मालमत्ता कोड"
+  },
+  "agent": {
+    "reraLabel": "रेरा",
+    "callAgent": "एजंटला कॉल करा",
+    "whatsapp": "व्हॉट्सअ‍ॅप"
+  },
+  "enquiry": {
+    "namePlaceholder": "तुमचे नाव",
+    "phonePlaceholder": "मोबाईल नंबर *",
+    "messagePlaceholder": "तुमचा संदेश (पर्यायी)",
+    "submit": "चौकशी पाठवा",
+    "submitting": "पाठवत आहे...",
+    "successTitle": "चौकशी पाठवली!",
+    "successDesc": "एजंट लवकरच तुमच्याशी संपर्क करेल.",
+    "errorMsg": "काहीतरी चुकले. कृपया पुन्हा प्रयत्न करा."
+  },
+  "stats": {
+    "views": "व्ह्यूज",
+    "qrScans": "QR स्कॅन",
+    "share": "शेअर करा",
+    "copied": "दुवा कॉपी केला!"
+  },
+  "banner": {
+    "sold": "ही मालमत्ता विकली गेली आहे. एजंटशी संपर्क करा.",
+    "rented": "ही मालमत्ता भाड्याने दिली गेली आहे. एजंटशी संपर्क करा.",
+    "removed": "ही मालमत्ता काढून टाकली गेली आहे. उपलब्धतेसाठी एजंटशी संपर्क करा."
+  },
+  "noPhotos": "फोटो उपलब्ध नाहीत",
+  "noContact": "संपर्क माहिती उपलब्ध नाही",
+  "poweredBy": "द्वारे संचालित",
+  "tagline": "भारताचे QR-नेटिव्ह लिस्टिंग प्लॅटफॉर्म"
+}

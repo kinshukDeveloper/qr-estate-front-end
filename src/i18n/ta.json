@@ -1,0 +1,101 @@
+{
+  "locale": "ta",
+  "localeName": "தமிழ்",
+  "dir": "ltr",
+  "font": "'Noto Sans Tamil', system-ui",
+
+  "status": {
+    "available": "கிடைக்கும்",
+    "sold": "விற்கப்பட்டது",
+    "rented": "வாடகைக்கு",
+    "draft": "வரைவு",
+    "inactive": "செயலற்றது"
+  },
+  "propertyType": {
+    "apartment": "அடுக்குமாடி",
+    "villa": "வில்லா",
+    "house": "வீடு",
+    "plot": "மனை / நிலம்",
+    "commercial": "வணிக",
+    "pg": "பிஜி / விடுதி"
+  },
+  "listingType": {
+    "sale": "விற்பனைக்கு",
+    "rent": "வாடகைக்கு"
+  },
+  "furnishing": {
+    "unfurnished": "தளவாடங்கள் இல்லாமல்",
+    "semi-furnished": "அரை-தளவாடங்களுடன்",
+    "fully-furnished": "முழு தளவாடங்களுடன்"
+  },
+  "facing": {
+    "North": "வடக்கு",
+    "South": "தெற்கு",
+    "East": "கிழக்கு",
+    "West": "மேற்கு",
+    "North-East": "வடகிழக்கு",
+    "North-West": "வடமேற்கு",
+    "South-East": "தென்கிழக்கு",
+    "South-West": "தென்மேற்கு"
+  },
+  "price": {
+    "negotiable": "பேசி தீர்க்கலாம்",
+    "perMonth": "/மாதம்",
+    "lakh": "லட்சம்",
+    "crore": "கோடி"
+  },
+  "specs": {
+    "beds": "படுக்கையறை",
+    "baths": "குளியலறை",
+    "area": "பரப்பளவு",
+    "floor": "தளம்"
+  },
+  "sections": {
+    "propertyDetails": "சொத்து விவரங்கள்",
+    "aboutProperty": "இந்த சொத்தைப் பற்றி",
+    "amenities": "வசதிகள்",
+    "location": "இடம்",
+    "listedBy": "பட்டியலிட்டவர்",
+    "sendEnquiry": "விசாரணை அனுப்பவும்"
+  },
+  "details": {
+    "type": "வகை",
+    "purpose": "நோக்கம்",
+    "furnishing": "தளவாடங்கள்",
+    "facing": "திசை",
+    "area": "பரப்பளவு",
+    "floor": "தளம்",
+    "of": "இல்",
+    "propertyCode": "சொத்து குறியீடு"
+  },
+  "agent": {
+    "reraLabel": "ரேரா",
+    "callAgent": "முகவரை அழைக்கவும்",
+    "whatsapp": "வாட்ஸ்அப்"
+  },
+  "enquiry": {
+    "namePlaceholder": "உங்கள் பெயர்",
+    "phonePlaceholder": "மொபைல் எண் *",
+    "messagePlaceholder": "உங்கள் செய்தி (விரும்பினால்)",
+    "submit": "விசாரணை அனுப்பவும்",
+    "submitting": "அனுப்புகிறது...",
+    "successTitle": "விசாரணை அனுப்பப்பட்டது!",
+    "successDesc": "முகவர் விரைவில் தொடர்பு கொள்வார்.",
+    "errorMsg": "தவறு நிகழ்ந்தது. மீண்டும் முயற்சிக்கவும்."
+  },
+  "stats": {
+    "views": "பார்வைகள்",
+    "qrScans": "QR ஸ்கேன்",
+    "share": "பகிரவும்",
+    "copied": "இணைப்பு நகலெடுக்கப்பட்டது!"
+  },
+  "banner": {
+    "sold": "இந்த சொத்து விற்கப்பட்டது. முகவரிடம் தொடர்பு கொள்ளுங்கள்.",
+    "rented": "இந்த சொத்து வாடகைக்கு சென்றது. முகவரிடம் தொடர்பு கொள்ளுங்கள்.",
+    "removed": "இந்த சொத்து அகற்றப்பட்டது. முகவரிடம் தொடர்பு கொள்ளுங்கள்."
+  },
+  "noPhotos": "புகைப்படங்கள் இல்லை",
+  "noContact": "தொடர்பு தகவல் இல்லை",
+  "poweredBy": "இயக்கப்படுகிறது",
+  "tagline": "இந்தியாவின் QR-நேட்டிவ் லிஸ்டிங் தளம்"
+}
