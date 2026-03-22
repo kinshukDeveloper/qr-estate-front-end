@@ -78,7 +78,7 @@ export default function OptimizerPage() {
   return (
     <div className="max-w-3xl space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-black text-white flex items-center gap-3"><TrendingUp size={22} className="text-[#FFB830]" /> AI Optimizer</h1>
+        <h1 className="flex items-center gap-3 text-2xl font-black text-white"><TrendingUp size={22} className="text-[#FFB830]" /> AI Optimizer</h1>
         <p className="text-[#7A95AE] text-sm mt-1">Optimise any listing for maximum conversion — price, title, amenities, and more.</p>
       </div>
 
@@ -108,7 +108,7 @@ export default function OptimizerPage() {
               {[['Min',priceData.suggested_min,'#4A6580'],['Mid ★',priceData.suggested_mid,'#00D4C8'],['Max',priceData.suggested_max,'#2ECC8A']].map(([l,v,c]) => (
                 <div key={l as string} className="bg-[#060C12] border border-[#1A2D40] p-3 text-center">
                   <div className="text-[9px] font-mono text-[#4A6580] uppercase mb-1">{l}</div>
-                  <div className="font-mono font-bold text-sm" style={{color:c as string}}>{fmtPrice(v as number)}</div>
+                  <div className="font-mono text-sm font-bold" style={{color:c as string}}>{fmtPrice(v as number)}</div>
                 </div>
               ))}
             </div>
@@ -150,14 +150,14 @@ export default function OptimizerPage() {
                     <span className="font-mono text-[9px] text-[#4A6580]">Score: {v.score}/10</span>
                     <span className="text-[9px] font-mono text-[#4A6580]">Source: {titleData.source}</span>
                   </div>
-                  <div className="flex gap-2 flex-shrink-0">
+                  <div className="flex flex-shrink-0 gap-2">
                     <button onClick={() => { navigator.clipboard.writeText(v.title); setCopied(v.title); setTimeout(()=>setCopied(''),1600); }}
                       className="flex items-center gap-1 text-[10px] font-mono text-[#4A6580] hover:text-[#A78BFA]">
-                      {copiedTitle === v.title ? <Check size={10}/> : <Copy size={10}/>} Copy
+                      {copiedTitle === v.title ? <CheckCircle2 size={10}/> : <Copy size={10}/>} Copy
                     </button>
                   </div>
                 </div>
-                <p className="text-sm text-white font-medium mb-2">{v.title}</p>
+                <p className="mb-2 text-sm font-medium text-white">{v.title}</p>
                 {v.improvements?.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {v.improvements.map((imp:string) => <span key={imp} className="text-[9px] font-mono bg-[rgba(46,204,138,0.08)] text-[#2ECC8A] border border-[rgba(46,204,138,0.2)] px-1.5 py-0.5">{imp}</span>)}
@@ -190,7 +190,7 @@ export default function OptimizerPage() {
                 <div className="space-y-1.5">
                   {amenData.missing_amenities.map((m:any) => (
                     <div key={m.amenity} className="flex items-center gap-3 bg-[#060C12] px-3 py-2">
-                      <span className="text-sm text-white w-28 flex-shrink-0">{m.amenity}</span>
+                      <span className="flex-shrink-0 text-sm text-white w-28">{m.amenity}</span>
                       <div className="flex-1 h-1.5 bg-[#1A2D40] overflow-hidden"><div className="h-full bg-[#2ECC8A]" style={{width:`${m.prevalence_pct}%`}}/></div>
                       <span className="text-[10px] font-mono text-[#2ECC8A] w-12 text-right">{m.prevalence_pct}%</span>
                       <span className={`text-[9px] font-mono px-1.5 py-0.5 ${m.impact==='high'?'bg-[rgba(255,77,106,0.1)] text-[#FF4D6A]':'bg-[rgba(255,184,48,0.1)] text-[#FFB830]'}`}>{m.impact}</span>
@@ -223,7 +223,7 @@ export default function OptimizerPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-6">
               <div className="text-center">
-                <div className="font-mono font-black text-4xl" style={{color:convData.grade==='A'?'#2ECC8A':convData.grade==='B'?'#00D4C8':convData.grade==='C'?'#FFB830':'#FF4D6A'}}>
+                <div className="font-mono text-4xl font-black" style={{color:convData.grade==='A'?'#2ECC8A':convData.grade==='B'?'#00D4C8':convData.grade==='C'?'#FFB830':'#FF4D6A'}}>
                   {convData.grade}
                 </div>
                 <div className="text-[10px] font-mono text-[#4A6580] mt-0.5">Grade</div>
@@ -247,7 +247,7 @@ export default function OptimizerPage() {
                 <div className="space-y-2">
                   {convData.factors_to_improve.map((f:any) => (
                     <div key={f.factor} className="flex items-start gap-3 bg-[#060C12] p-3">
-                      <div className="w-20 flex-shrink-0">
+                      <div className="flex-shrink-0 w-20">
                         <div className="text-[9px] font-mono text-[#4A6580] uppercase">{f.factor}</div>
                         <div className="text-[10px] font-mono text-[#FFB830] font-bold">+{f.pts_available} pts</div>
                       </div>
