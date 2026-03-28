@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Play, Maximize2, ExternalLink } from 'lucide-react';
+import api from '@/lib/api';
 
 interface Props {
   tourUrl:   string;
   embedUrl:  string;
   shortCode: string;
-  apiBase:   string;
 }
 
 const PROVIDER_LABELS: Record<string, { label: string; color: string }> = {
@@ -25,7 +25,7 @@ function detectProvider(url: string) {
   return 'other';
 }
 
-export function VirtualTourEmbed({ tourUrl, embedUrl, shortCode, apiBase }: Props) {
+export function VirtualTourEmbed({ tourUrl, embedUrl, shortCode }: Props) {
   const [loaded,    setLoaded]    = useState(false);
   const [fullscreen,setFullscreen]= useState(false);
   const provider   = detectProvider(tourUrl);
@@ -34,7 +34,8 @@ export function VirtualTourEmbed({ tourUrl, embedUrl, shortCode, apiBase }: Prop
   // Track view when iframe loads
   useEffect(() => {
     if (!loaded) return;
-    fetch(`${apiBase}/tours/view/${shortCode}`, { method: 'POST' }).catch(() => {});
+    // fetch(`${apiBase}/tours/view/${shortCode}`, { method: 'POST' }).catch(() => {});
+    api.post(`/tours/view/${shortCode}`).catch(() => {});
   }, [loaded]);
 
   return (
@@ -76,9 +77,9 @@ export function VirtualTourEmbed({ tourUrl, embedUrl, shortCode, apiBase }: Prop
           style={{ height: '220px' }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-          <div className="relative flex flex-col items-center gap-2 text-white z-10">
+          <div className="relative z-10 flex flex-col items-center gap-2 text-white">
             <div
-              className="w-14 h-14 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform"
+              className="flex items-center justify-center transition-transform rounded-full w-14 h-14 group-hover:scale-110"
               style={{ background: providerMeta.color }}
             >
               <Play size={22} fill="white" />

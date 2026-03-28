@@ -1,385 +1,762 @@
+// 'use client';
+
+// import { useState, useEffect } from 'react';
+// import { useSearchParams } from 'next/navigation';
+// import { QrCode, Download, RefreshCw, Eye, EyeOff, Zap, ChevronDown, Check } from 'lucide-react';
+// import { qrAPI, type QRCode } from '@/lib/qr';
+// import { listingsAPI, type Listing } from '@/lib/listings';
+// import { Button } from '@/components/ui/Button';
+// import axios from 'axios';
+
+// const COLORS = [
+//   { label: 'Black', fg: '#000000', bg: '#FFFFFF' },
+//   { label: 'Teal', fg: '#007A74', bg: '#FFFFFF' },
+//   { label: 'Navy', fg: '#0D1F2D', bg: '#FFFFFF' },
+//   { label: 'Gold', fg: '#B8860B', bg: '#FFFFFF' },
+//   { label: 'White', fg: '#FFFFFF', bg: '#000000' },
+// ];
+
+// function formatPrice(price: number, type: string) {
+//   const suffix = type === 'rent' ? '/mo' : '';
+//   if (price >= 10000000) return `₹${(price / 10000000).toFixed(1)}Cr${suffix}`;
+//   if (price >= 100000) return `₹${(price / 100000).toFixed(1)}L${suffix}`;
+//   return `₹${price.toLocaleString('en-IN')}${suffix}`;
+// }
+
+// export default function QrClient() {
+//   const searchParams = useSearchParams();
+//   const preselectedListing = searchParams.get('listing');
+
+//   const [listings, setListings] = useState<Listing[]>([]);
+//   const [qrCodes, setQrCodes] = useState<QRCode[]>([]);
+//   const [selectedListingId, setSelectedListingId] = useState(preselectedListing || '');
+//   const [generatedQR, setGeneratedQR] = useState<QRCode | null>(null);
+//   const [isGenerating, setIsGenerating] = useState(false);
+//   const [isLoading, setIsLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   // QR options
+//   const [selectedColor, setSelectedColor] = useState(COLORS[0]);
+//   const [includeFrame, setIncludeFrame] = useState(false);
+//   const [frameLabel, setFrameLabel] = useState('Scan to View Property');
+
+//   useEffect(() => {
+//     async function load() {
+//       setIsLoading(true);
+//       try {
+//         const [listRes, qrRes] = await Promise.all([
+//           listingsAPI.getAll({ status: 'active', limit: 50 }),
+//           qrAPI.getAll(),
+//         ]);
+//         setListings(listRes.data.data.listings);
+//         setQrCodes(qrRes.data.data.qr_codes);
+
+//         // If listing pre-selected from URL, find existing QR
+//         if (preselectedListing) {
+//           const existing = qrRes.data.data.qr_codes.find(
+//             (q: QRCode) => q.listing_id === preselectedListing
+//           );
+//           if (existing) setGeneratedQR(existing);
+//         }
+//       } catch (err) {
+//         setError('Failed to load data');
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     }
+//     load();
+//   }, []);
+
+//   async function handleGenerate() {
+//     if (!selectedListingId) {
+//       setError('Please select a listing first');
+//       return;
+//     }
+//     setIsGenerating(true);
+//     setError(null);
+//     try {
+//       const res = await qrAPI.generate({
+//         listing_id: selectedListingId,
+//         foreground_color: selectedColor.fg,
+//         background_color: selectedColor.bg,
+//         include_frame: includeFrame,
+//         frame_label: frameLabel,
+//       });
+//       const newQR = res.data.data.qr;
+//       setGeneratedQR(newQR);
+
+//       // Update list
+//       setQrCodes(prev => {
+//         const exists = prev.find(q => q.listing_id === selectedListingId);
+//         if (exists) return prev.map(q => q.listing_id === selectedListingId ? { ...q, ...newQR } : q);
+//         return [newQR, ...prev];
+//       });
+//     } catch (err) {
+//       if (axios.isAxiosError(err)) {
+//         setError(err.response?.data?.message || 'Failed to generate QR');
+//       }
+//     } finally {
+//       setIsGenerating(false);
+//     }
+//   }
+
+//   async function handleToggle(qrId: string) {
+//     try {
+//       const res = await qrAPI.toggle(qrId);
+//       setQrCodes(prev => prev.map(q => q.id === qrId ? { ...q, is_active: res.data.data.is_active } : q));
+//       if (generatedQR?.id === qrId) {
+//         setGeneratedQR(prev => prev ? { ...prev, is_active: res.data.data.is_active } : prev);
+//       }
+//     } catch {
+//       setError('Failed to toggle QR status');
+//     }
+//   }
+
+//   function handleDownload(qrId: string, format: 'png' | 'svg' = 'png') {
+//     const url = qrAPI.getDownloadUrl(qrId, format);
+//     const a = document.createElement('a');
+//     a.href = url;
+//     a.download = `qr-${qrId}.${format}`;
+//     // Add auth header via fetch instead for authenticated download
+//     fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('qr_estate_access_token') || ''}` } })
+//       .then(r => r.blob())
+//       .then(blob => {
+//         const blobUrl = URL.createObjectURL(blob);
+//         a.href = blobUrl;
+//         document.body.appendChild(a);
+//         a.click();
+//         document.body.removeChild(a);
+//         URL.revokeObjectURL(blobUrl);
+//       })
+//       .catch(() => setError('Download failed'));
+//   }
+
+//   const selectedListing = listings.find(l => l.id === selectedListingId);
+
+//   return (
+//     <div className="space-y-6 animate-fade-in">
+//       {/* Header */}
+//       <div>
+//         <h1 className="text-2xl font-black text-white">QR Codes</h1>
+//         <p className="text-[#7A95AE] text-sm mt-0.5">Generate and manage QR codes for your listings</p>
+//       </div>
+
+//       {error && (
+//         <div className="px-4 py-3 bg-[rgba(255,77,106,0.08)] border border-[rgba(255,77,106,0.2)] text-[#FF4D6A] text-sm">
+//           ⚠ {error}
+//         </div>
+//       )}
+
+//       <div className="grid gap-6 lg:grid-cols-2">
+
+//         {/* ── LEFT: Generator ─────────────────────────────────── */}
+//         <div className="space-y-4">
+//           <div className="bg-[#111C28] border border-[#1A2D40] p-6 space-y-5">
+//             <div>
+//               <div className="text-[10px] font-bold tracking-widest text-[#00D4C8] uppercase mb-1">Step 1</div>
+//               <h2 className="mb-3 text-sm font-bold text-white">Select a Listing</h2>
+
+//               {isLoading ? (
+//                 <div className="input animate-pulse bg-[#1A2D40] h-11" />
+//               ) : listings.length === 0 ? (
+//                 <div className="text-sm text-[#4A6580] p-3 border border-dashed border-[#1A2D40] text-center">
+//                   No active listings yet.{' '}
+//                   <a href="/dashboard/listings/new" className="text-[#00D4C8] hover:underline">Create one first →</a>
+//                 </div>
+//               ) : (
+//                 <select
+//                   className="input"
+//                   value={selectedListingId}
+//                   onChange={e => {
+//                     setSelectedListingId(e.target.value);
+//                     setGeneratedQR(null);
+//                     // Check if QR already exists
+//                     const existing = qrCodes.find(q => q.listing_id === e.target.value);
+//                     if (existing) setGeneratedQR(existing);
+//                   }}
+//                 >
+//                   <option value="">-- Choose a listing --</option>
+//                   {listings.map(l => (
+//                     <option key={l.id} value={l.id}>
+//                       {l.title} · {l.city} · {formatPrice(l.price, l.listing_type)}
+//                     </option>
+//                   ))}
+//                 </select>
+//               )}
+//             </div>
+
+//             {/* Color */}
+//             <div>
+//               <div className="text-[10px] font-bold tracking-widest text-[#00D4C8] uppercase mb-1">Step 2</div>
+//               <h2 className="mb-3 text-sm font-bold text-white">Choose Color</h2>
+//               <div className="flex flex-wrap gap-2">
+//                 {COLORS.map(c => (
+//                   <button
+//                     key={c.label}
+//                     onClick={() => setSelectedColor(c)}
+//                     className={`flex items-center gap-2 px-3 py-2 text-xs border transition-colors ${
+//                       selectedColor.label === c.label
+//                         ? 'border-[#00D4C8] text-[#00D4C8]'
+//                         : 'border-[#1A2D40] text-[#7A95AE] hover:border-[#4A6580]'
+//                     }`}
+//                   >
+//                     <div
+//                       className="w-4 h-4 border border-[#1A2D40] flex-shrink-0"
+//                       style={{ background: c.fg }}
+//                     />
+//                     {c.label}
+//                     {selectedColor.label === c.label && <Check size={10} />}
+//                   </button>
+//                 ))}
+//               </div>
+//             </div>
+
+//             {/* Frame */}
+//             <div>
+//               <div className="text-[10px] font-bold tracking-widest text-[#00D4C8] uppercase mb-1">Step 3</div>
+//               <h2 className="mb-3 text-sm font-bold text-white">Branding Frame</h2>
+//               <label className="flex items-center gap-3 mb-3 cursor-pointer">
+//                 <div
+//                   onClick={() => setIncludeFrame(!includeFrame)}
+//                   className={`w-10 h-5 rounded-full transition-colors relative flex-shrink-0 ${
+//                     includeFrame ? 'bg-[#00D4C8]' : 'bg-[#1A2D40]'
+//                   }`}
+//                 >
+//                   <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
+//                     includeFrame ? 'left-5' : 'left-0.5'
+//                   }`} />
+//                 </div>
+//                 <span className="text-sm text-[#7A95AE]">Add branded frame with label</span>
+//               </label>
+//               {includeFrame && (
+//                 <input
+//                   type="text"
+//                   value={frameLabel}
+//                   onChange={e => setFrameLabel(e.target.value)}
+//                   className="text-sm input"
+//                   placeholder="Label text on frame..."
+//                   maxLength={60}
+//                 />
+//               )}
+//             </div>
+
+//             {/* Generate button */}
+//             <Button
+//               onClick={handleGenerate}
+//               isLoading={isGenerating}
+//               fullWidth
+//               size="lg"
+//               className="flex items-center gap-2"
+//             >
+//               <Zap size={16} />
+//               {generatedQR ? 'Regenerate QR Code' : 'Generate QR Code'}
+//             </Button>
+//           </div>
+//         </div>
+
+//         {/* ── RIGHT: Preview ──────────────────────────────────── */}
+//         <div className="bg-[#111C28] border border-[#1A2D40] p-6 flex flex-col items-center justify-center min-h-80">
+//           {!generatedQR ? (
+//             <div className="text-center">
+//               <div className="w-32 h-32 border-2 border-dashed border-[#1A2D40] flex items-center justify-center mb-4 mx-auto">
+//                 <QrCode size={40} className="text-[#1A2D40]" />
+//               </div>
+//               <p className="text-[#4A6580] text-sm">
+//                 {selectedListingId ? 'Click Generate to create QR' : 'Select a listing to get started'}
+//               </p>
+//             </div>
+//           ) : (
+//             <div className="w-full">
+//               {/* QR image */}
+//               <div className="flex justify-center mb-4">
+//                 {generatedQR.qr_url?.startsWith('data:') ? (
+//                   <img src={generatedQR.qr_url} alt="QR Code" className="w-52 h-52" />
+//                 ) : generatedQR.qr_url ? (
+//                   <img src={generatedQR.qr_url} alt="QR Code" className="w-52 h-52" />
+//                 ) : (
+//                   <div className="w-52 h-52 bg-[#0D1821] border border-[#1A2D40] flex items-center justify-center">
+//                     <span className="text-xs text-[#4A6580]">Configure Cloudinary to see preview</span>
+//                   </div>
+//                 )}
+//               </div>
+
+//               {/* Listing name */}
+//               <div className="mb-4 text-center">
+//                 <div className="text-xs font-bold text-white mb-0.5 truncate">{generatedQR.listing_title}</div>
+//                 <div className="text-[10px] text-[#4A6580] font-mono">{generatedQR.target_url}</div>
+//               </div>
+
+//               {/* Stats */}
+//               <div className="grid grid-cols-2 gap-3 mb-4">
+//                 <div className="bg-[#0D1821] p-3 text-center">
+//                   <div className="text-xl font-black text-[#00D4C8]">{generatedQR.scan_count}</div>
+//                   <div className="text-[10px] text-[#4A6580] uppercase tracking-wide">Total Scans</div>
+//                 </div>
+//                 <div className="bg-[#0D1821] p-3 text-center">
+//                   <div className={`text-sm font-bold ${generatedQR.is_active ? 'text-[#2ECC8A]' : 'text-[#FF4D6A]'}`}>
+//                     {generatedQR.is_active ? '● Active' : '○ Inactive'}
+//                   </div>
+//                   <div className="text-[10px] text-[#4A6580] uppercase tracking-wide mt-0.5">Status</div>
+//                 </div>
+//               </div>
+
+//               {/* Actions */}
+//               <div className="flex gap-2">
+//                 <Button
+//                   onClick={() => handleDownload(generatedQR.id, 'png')}
+//                   variant="outline"
+//                   size="sm"
+//                   className="flex-1 flex items-center gap-1.5"
+//                 >
+//                   <Download size={13} /> PNG
+//                 </Button>
+//                 <Button
+//                   onClick={() => handleDownload(generatedQR.id, 'svg')}
+//                   variant="outline"
+//                   size="sm"
+//                   className="flex-1 flex items-center gap-1.5"
+//                 >
+//                   <Download size={13} /> SVG
+//                 </Button>
+//                 <Button
+//                   onClick={() => handleToggle(generatedQR.id)}
+//                   variant="ghost"
+//                   size="sm"
+//                   className="flex items-center gap-1.5"
+//                 >
+//                   {generatedQR.is_active ? <EyeOff size={13} /> : <Eye size={13} />}
+//                 </Button>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* ── All QR Codes ────────────────────────────────────────── */}
+//       {qrCodes.length > 0 && (
+//         <div>
+//           <div className="text-[10px] font-bold tracking-widest text-[#4A6580] uppercase mb-3">
+//             All QR Codes — {qrCodes.length} total
+//           </div>
+//           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+//             {qrCodes.map(qr => (
+//               <div
+//                 key={qr.id}
+//                 className={`bg-[#111C28] border p-4 cursor-pointer transition-colors ${
+//                   generatedQR?.id === qr.id
+//                     ? 'border-[#00D4C8]'
+//                     : 'border-[#1A2D40] hover:border-[#4A6580]'
+//                 }`}
+//                 onClick={() => {
+//                   setGeneratedQR(qr);
+//                   setSelectedListingId(qr.listing_id);
+//                 }}
+//               >
+//                 <div className="flex items-start gap-3">
+//                   {/* Mini QR preview */}
+//                   <div className="w-12 h-12 bg-[#0D1821] flex-shrink-0 flex items-center justify-center">
+//                     {qr.qr_url && !qr.qr_url.startsWith('data:') ? (
+//                       <img src={qr.qr_url} alt="" className="w-10 h-10" />
+//                     ) : (
+//                       <QrCode size={20} className="text-[#4A6580]" />
+//                     )}
+//                   </div>
+//                   <div className="flex-1 min-w-0">
+//                     <div className="text-xs font-bold text-white truncate">{qr.listing_title}</div>
+//                     <div className="text-[10px] text-[#4A6580] mt-0.5">{qr.city} · {qr.listing_type}</div>
+//                     <div className="flex items-center gap-3 mt-1.5">
+//                       <span className="text-[10px] text-[#00D4C8] font-mono">{qr.scan_count} scans</span>
+//                       <span className={`text-[9px] font-bold px-1.5 py-0.5 ${
+//                         qr.is_active
+//                           ? 'bg-[rgba(46,204,138,0.1)] text-[#2ECC8A]'
+//                           : 'bg-[rgba(255,77,106,0.1)] text-[#FF4D6A]'
+//                       }`}>
+//                         {qr.is_active ? 'ACTIVE' : 'OFF'}
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+
 'use client';
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { QrCode, Download, RefreshCw, Eye, EyeOff, Zap, ChevronDown, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  QrCode, Download, Eye, EyeOff, Zap, Check,
+  Loader2, AlertTriangle, Scan, Hash, ToggleLeft, ToggleRight,
+} from 'lucide-react';
 import { qrAPI, type QRCode } from '@/lib/qr';
 import { listingsAPI, type Listing } from '@/lib/listings';
-import { Button } from '@/components/ui/Button';
 import axios from 'axios';
 
 const COLORS = [
-  { label: 'Black', fg: '#000000', bg: '#FFFFFF' },
-  { label: 'Teal', fg: '#007A74', bg: '#FFFFFF' },
-  { label: 'Navy', fg: '#0D1F2D', bg: '#FFFFFF' },
-  { label: 'Gold', fg: '#B8860B', bg: '#FFFFFF' },
-  { label: 'White', fg: '#FFFFFF', bg: '#000000' },
+  { label: 'Classic',  fg: '#000000', bg: '#FFFFFF' },
+  { label: 'Teal',     fg: '#0FADA3', bg: '#FFFFFF' },
+  { label: 'Navy',     fg: '#0D1F2D', bg: '#FFFFFF' },
+  { label: 'Gold',     fg: '#B8860B', bg: '#FFFFFF' },
+  { label: 'Inverted', fg: '#FFFFFF', bg: '#07090D' },
 ];
 
-function formatPrice(price: number, type: string) {
-  const suffix = type === 'rent' ? '/mo' : '';
-  if (price >= 10000000) return `₹${(price / 10000000).toFixed(1)}Cr${suffix}`;
-  if (price >= 100000) return `₹${(price / 100000).toFixed(1)}L${suffix}`;
-  return `₹${price.toLocaleString('en-IN')}${suffix}`;
+function fmt(price: number, type: string) {
+  const s = type === 'rent' ? '/mo' : '';
+  if (price >= 10000000) return `₹${(price / 10000000).toFixed(1)}Cr${s}`;
+  if (price >= 100000)   return `₹${(price / 100000).toFixed(1)}L${s}`;
+  return `₹${price.toLocaleString('en-IN')}${s}`;
+}
+
+// ── Reusable section card ─────────────────────────────────────────────────────
+function StepCard({ step, label, color, children }: { step: string; label: string; color: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-[var(--border)]">
+        <span className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black" style={{ background: `${color}18`, color, border: `1px solid ${color}30`, fontFamily: 'var(--font-mono)' }}>
+          {step}
+        </span>
+        <span className="text-[11px] font-black tracking-[0.15em] uppercase" style={{ color: 'var(--muted)', fontFamily: 'var(--font-mono)' }}>{label}</span>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
 }
 
 export default function QrClient() {
-  const searchParams = useSearchParams();
-  const preselectedListing = searchParams.get('listing');
+  const searchParams      = useSearchParams();
+  const preselected       = searchParams.get('listing');
 
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [qrCodes, setQrCodes] = useState<QRCode[]>([]);
-  const [selectedListingId, setSelectedListingId] = useState(preselectedListing || '');
-  const [generatedQR, setGeneratedQR] = useState<QRCode | null>(null);
+  const [listings,     setListings]     = useState<Listing[]>([]);
+  const [qrCodes,      setQrCodes]      = useState<QRCode[]>([]);
+  const [selectedId,   setSelectedId]   = useState(preselected || '');
+  const [generatedQR,  setGeneratedQR]  = useState<QRCode | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // QR options
-  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
-  const [includeFrame, setIncludeFrame] = useState(false);
-  const [frameLabel, setFrameLabel] = useState('Scan to View Property');
+  const [isLoading,    setIsLoading]    = useState(true);
+  const [error,        setError]        = useState<string | null>(null);
+  const [color,        setColor]        = useState(COLORS[0]);
+  const [withFrame,    setWithFrame]    = useState(false);
+  const [frameLabel,   setFrameLabel]   = useState('Scan to View Property');
 
   useEffect(() => {
-    async function load() {
-      setIsLoading(true);
-      try {
-        const [listRes, qrRes] = await Promise.all([
-          listingsAPI.getAll({ status: 'active', limit: 50 }),
-          qrAPI.getAll(),
-        ]);
-        setListings(listRes.data.data.listings);
-        setQrCodes(qrRes.data.data.qr_codes);
-
-        // If listing pre-selected from URL, find existing QR
-        if (preselectedListing) {
-          const existing = qrRes.data.data.qr_codes.find(
-            (q: QRCode) => q.listing_id === preselectedListing
-          );
-          if (existing) setGeneratedQR(existing);
-        }
-      } catch (err) {
-        setError('Failed to load data');
-      } finally {
-        setIsLoading(false);
+    Promise.all([
+      listingsAPI.getAll({ status: 'active', limit: 50 }),
+      qrAPI.getAll(),
+    ]).then(([lRes, qRes]) => {
+      const ls = lRes.data.data.listings;
+      const qs = qRes.data.data.qr_codes;
+      setListings(ls);
+      setQrCodes(qs);
+      if (preselected) {
+        const ex = qs.find((q: QRCode) => q.listing_id === preselected);
+        if (ex) setGeneratedQR(ex);
       }
-    }
-    load();
+    }).catch(() => setError('Failed to load data'))
+      .finally(() => setIsLoading(false));
   }, []);
 
   async function handleGenerate() {
-    if (!selectedListingId) {
-      setError('Please select a listing first');
-      return;
-    }
-    setIsGenerating(true);
-    setError(null);
+    if (!selectedId) { setError('Please select a listing first'); return; }
+    setIsGenerating(true); setError(null);
     try {
       const res = await qrAPI.generate({
-        listing_id: selectedListingId,
-        foreground_color: selectedColor.fg,
-        background_color: selectedColor.bg,
-        include_frame: includeFrame,
+        listing_id: selectedId,
+        foreground_color: color.fg,
+        background_color: color.bg,
+        include_frame: withFrame,
         frame_label: frameLabel,
       });
       const newQR = res.data.data.qr;
       setGeneratedQR(newQR);
-
-      // Update list
       setQrCodes(prev => {
-        const exists = prev.find(q => q.listing_id === selectedListingId);
-        if (exists) return prev.map(q => q.listing_id === selectedListingId ? { ...q, ...newQR } : q);
-        return [newQR, ...prev];
+        const exists = prev.find(q => q.listing_id === selectedId);
+        return exists
+          ? prev.map(q => q.listing_id === selectedId ? { ...q, ...newQR } : q)
+          : [newQR, ...prev];
       });
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || 'Failed to generate QR');
-      }
-    } finally {
-      setIsGenerating(false);
-    }
+      if (axios.isAxiosError(err)) setError(err.response?.data?.message || 'Generation failed');
+    } finally { setIsGenerating(false); }
   }
 
   async function handleToggle(qrId: string) {
     try {
       const res = await qrAPI.toggle(qrId);
-      setQrCodes(prev => prev.map(q => q.id === qrId ? { ...q, is_active: res.data.data.is_active } : q));
-      if (generatedQR?.id === qrId) {
-        setGeneratedQR(prev => prev ? { ...prev, is_active: res.data.data.is_active } : prev);
-      }
-    } catch {
-      setError('Failed to toggle QR status');
-    }
+      const updated = res.data.data.is_active;
+      setQrCodes(prev => prev.map(q => q.id === qrId ? { ...q, is_active: updated } : q));
+      if (generatedQR?.id === qrId) setGeneratedQR(p => p ? { ...p, is_active: updated } : p);
+    } catch { setError('Failed to toggle QR'); }
   }
 
-  function handleDownload(qrId: string, format: 'png' | 'svg' = 'png') {
+  function handleDownload(qrId: string, format: 'png' | 'svg') {
     const url = qrAPI.getDownloadUrl(qrId, format);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `qr-${qrId}.${format}`;
-    // Add auth header via fetch instead for authenticated download
     fetch(url, { headers: { Authorization: `Bearer ${localStorage.getItem('qr_estate_access_token') || ''}` } })
       .then(r => r.blob())
       .then(blob => {
-        const blobUrl = URL.createObjectURL(blob);
-        a.href = blobUrl;
-        document.body.appendChild(a);
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `qr-${qrId}.${format}`;
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
+        URL.revokeObjectURL(a.href);
       })
       .catch(() => setError('Download failed'));
   }
 
-  const selectedListing = listings.find(l => l.id === selectedListingId);
+  const selectedListing = listings.find(l => l.id === selectedId);
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-black text-white">QR Codes</h1>
-        <p className="text-[#7A95AE] text-sm mt-0.5">Generate and manage QR codes for your listings</p>
+    <div className="pb-8 space-y-5 animate-fade-in">
+
+      {/* ── Header ── */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-[1.5rem] font-extrabold text-[var(--white)] tracking-tight" style={{ fontFamily: 'var(--font-syne)' }}>QR Codes</h1>
+          <p className="text-[13px] text-[var(--muted)] mt-0.5">Generate print-ready QR codes for every listing</p>
+        </div>
+        {qrCodes.length > 0 && (
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[var(--surface)] border border-[var(--border)]">
+            <QrCode size={13} className="text-[var(--teal)]" />
+            <span className="text-[11px] font-bold text-[var(--muted)]" style={{ fontFamily: 'var(--font-mono)' }}>{qrCodes.length} codes</span>
+          </div>
+        )}
       </div>
 
-      {error && (
-        <div className="px-4 py-3 bg-[rgba(255,77,106,0.08)] border border-[rgba(255,77,106,0.2)] text-[#FF4D6A] text-sm">
-          ⚠ {error}
-        </div>
-      )}
+      {/* ── Error ── */}
+      <AnimatePresence>
+        {error && (
+          <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="flex items-center gap-2.5 rounded-xl px-4 py-3 text-[13px] bg-[rgba(240,64,96,0.06)] border border-[rgba(240,64,96,0.2)] text-[var(--red)]">
+            <AlertTriangle size={14} className="flex-shrink-0" />
+            {error}
+            <button onClick={() => setError(null)} className="ml-auto text-[var(--dim)] hover:text-[var(--muted)]">✕</button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* ── Main grid ── */}
+      <div className="grid gap-5 lg:grid-cols-[1fr_340px]">
 
-        {/* ── LEFT: Generator ─────────────────────────────────── */}
+        {/* Left column — generator steps */}
         <div className="space-y-4">
-          <div className="bg-[#111C28] border border-[#1A2D40] p-6 space-y-5">
-            <div>
-              <div className="text-[10px] font-bold tracking-widest text-[#00D4C8] uppercase mb-1">Step 1</div>
-              <h2 className="mb-3 text-sm font-bold text-white">Select a Listing</h2>
 
-              {isLoading ? (
-                <div className="input animate-pulse bg-[#1A2D40] h-11" />
-              ) : listings.length === 0 ? (
-                <div className="text-sm text-[#4A6580] p-3 border border-dashed border-[#1A2D40] text-center">
-                  No active listings yet.{' '}
-                  <a href="/dashboard/listings/new" className="text-[#00D4C8] hover:underline">Create one first →</a>
-                </div>
-              ) : (
-                <select
-                  className="input"
-                  value={selectedListingId}
-                  onChange={e => {
-                    setSelectedListingId(e.target.value);
-                    setGeneratedQR(null);
-                    // Check if QR already exists
-                    const existing = qrCodes.find(q => q.listing_id === e.target.value);
-                    if (existing) setGeneratedQR(existing);
-                  }}
-                >
-                  <option value="">-- Choose a listing --</option>
-                  {listings.map(l => (
-                    <option key={l.id} value={l.id}>
-                      {l.title} · {l.city} · {formatPrice(l.price, l.listing_type)}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-
-            {/* Color */}
-            <div>
-              <div className="text-[10px] font-bold tracking-widest text-[#00D4C8] uppercase mb-1">Step 2</div>
-              <h2 className="mb-3 text-sm font-bold text-white">Choose Color</h2>
-              <div className="flex flex-wrap gap-2">
-                {COLORS.map(c => (
-                  <button
-                    key={c.label}
-                    onClick={() => setSelectedColor(c)}
-                    className={`flex items-center gap-2 px-3 py-2 text-xs border transition-colors ${
-                      selectedColor.label === c.label
-                        ? 'border-[#00D4C8] text-[#00D4C8]'
-                        : 'border-[#1A2D40] text-[#7A95AE] hover:border-[#4A6580]'
-                    }`}
-                  >
-                    <div
-                      className="w-4 h-4 border border-[#1A2D40] flex-shrink-0"
-                      style={{ background: c.fg }}
-                    />
-                    {c.label}
-                    {selectedColor.label === c.label && <Check size={10} />}
-                  </button>
-                ))}
+          {/* Step 1: Select listing */}
+          <StepCard step="1" label="Select Listing" color="var(--teal)">
+            {isLoading ? (
+              <div className="h-11 rounded-xl bg-[var(--card)] animate-pulse" />
+            ) : listings.length === 0 ? (
+              <div className="text-center py-6 text-[var(--muted)] text-[13px]">
+                No active listings.{' '}
+                <a href="/dashboard/listings/new" className="text-[var(--teal)] hover:underline">Create one first →</a>
               </div>
-            </div>
+            ) : (
+              <select
+                value={selectedId}
+                onChange={e => {
+                  setSelectedId(e.target.value);
+                  setGeneratedQR(null);
+                  const ex = qrCodes.find(q => q.listing_id === e.target.value);
+                  if (ex) setGeneratedQR(ex);
+                }}
+                className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-[13px] text-[var(--white)] outline-none focus:border-[var(--teal)] transition-colors appearance-none cursor-pointer"
+              >
+                <option value="">— Choose a listing —</option>
+                {listings.map(l => (
+                  <option key={l.id} value={l.id}>
+                    {l.title} · {l.city} · {fmt(l.price, l.listing_type)}
+                  </option>
+                ))}
+              </select>
+            )}
+          </StepCard>
 
-            {/* Frame */}
-            <div>
-              <div className="text-[10px] font-bold tracking-widest text-[#00D4C8] uppercase mb-1">Step 3</div>
-              <h2 className="mb-3 text-sm font-bold text-white">Branding Frame</h2>
-              <label className="flex items-center gap-3 mb-3 cursor-pointer">
-                <div
-                  onClick={() => setIncludeFrame(!includeFrame)}
-                  className={`w-10 h-5 rounded-full transition-colors relative flex-shrink-0 ${
-                    includeFrame ? 'bg-[#00D4C8]' : 'bg-[#1A2D40]'
+          {/* Step 2: Color */}
+          <StepCard step="2" label="QR Colour" color="var(--gold)">
+            <div className="flex flex-wrap gap-2">
+              {COLORS.map(c => (
+                <button
+                  key={c.label}
+                  onClick={() => setColor(c)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-[11px] font-semibold transition-all ${
+                    color.label === c.label
+                      ? 'border-[rgba(24,212,200,0.4)] bg-[rgba(24,212,200,0.08)] text-[var(--teal)]'
+                      : 'border-[var(--border)] text-[var(--muted)] hover:border-[var(--border2)]'
                   }`}
                 >
-                  <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all ${
-                    includeFrame ? 'left-5' : 'left-0.5'
-                  }`} />
-                </div>
-                <span className="text-sm text-[#7A95AE]">Add branded frame with label</span>
-              </label>
-              {includeFrame && (
-                <input
-                  type="text"
+                  <div className="flex-shrink-0 w-4 h-4 border rounded-sm border-white/10" style={{ background: c.fg }} />
+                  {c.label}
+                  {color.label === c.label && <Check size={10} />}
+                </button>
+              ))}
+            </div>
+          </StepCard>
+
+          {/* Step 3: Frame */}
+          <StepCard step="3" label="Branding Frame" color="var(--purple)">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[13px] text-[var(--muted)]">Add a labelled frame around the QR</span>
+              <button
+                onClick={() => setWithFrame(v => !v)}
+                className={`w-11 h-6 rounded-full transition-colors relative flex-shrink-0 ${withFrame ? 'bg-[var(--teal)]' : 'bg-[var(--border)]'}`}
+              >
+                <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-all ${withFrame ? 'left-[22px]' : 'left-0.5'}`} />
+              </button>
+            </div>
+            <AnimatePresence>
+              {withFrame && (
+                <motion.input
+                  initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
                   value={frameLabel}
                   onChange={e => setFrameLabel(e.target.value)}
-                  className="text-sm input"
-                  placeholder="Label text on frame..."
                   maxLength={60}
+                  placeholder="e.g. Scan to View Property"
+                  className="w-full bg-[var(--card)] border border-[var(--border)] rounded-xl px-4 py-2.5 text-[13px] text-[var(--white)] placeholder:text-[var(--dim)] outline-none focus:border-[var(--teal)] transition-colors"
                 />
               )}
-            </div>
+            </AnimatePresence>
+          </StepCard>
 
-            {/* Generate button */}
-            <Button
-              onClick={handleGenerate}
-              isLoading={isGenerating}
-              fullWidth
-              size="lg"
-              className="flex items-center gap-2"
-            >
-              <Zap size={16} />
-              {generatedQR ? 'Regenerate QR Code' : 'Generate QR Code'}
-            </Button>
-          </div>
+          {/* Generate button */}
+          <motion.button
+            onClick={handleGenerate}
+            disabled={!selectedId || isGenerating}
+            whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-[14px] font-bold text-[var(--bg)] disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ background: 'linear-gradient(135deg,#5EEEE8,#18D4C8,#0FADA3)', fontFamily: 'var(--font-syne)' }}
+          >
+            {isGenerating ? <><Loader2 size={16} className="animate-spin" /> Generating…</> : <><Zap size={16} /> {generatedQR ? 'Regenerate QR Code' : 'Generate QR Code'}</>}
+          </motion.button>
         </div>
 
-        {/* ── RIGHT: Preview ──────────────────────────────────── */}
-        <div className="bg-[#111C28] border border-[#1A2D40] p-6 flex flex-col items-center justify-center min-h-80">
+        {/* Right column — preview */}
+        <motion.div
+          initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.12, duration: 0.4 }}
+          className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] flex flex-col overflow-hidden"
+        >
+          <div className="px-5 py-3.5 border-b border-[var(--border)] flex items-center gap-2">
+            <div className="w-1.5 h-4 rounded-full bg-[var(--teal)]" />
+            <span className="text-[11px] font-black tracking-[0.15em] uppercase text-[var(--muted)]" style={{ fontFamily: 'var(--font-mono)' }}>Preview</span>
+          </div>
+
           {!generatedQR ? (
-            <div className="text-center">
-              <div className="w-32 h-32 border-2 border-dashed border-[#1A2D40] flex items-center justify-center mb-4 mx-auto">
-                <QrCode size={40} className="text-[#1A2D40]" />
+            <div className="flex flex-col items-center justify-center flex-1 gap-3 px-6 py-12 text-center">
+              <div className="w-24 h-24 rounded-2xl bg-[var(--card)] border-2 border-dashed border-[var(--border)] flex items-center justify-center">
+                <QrCode size={36} className="text-[var(--dim)]" />
               </div>
-              <p className="text-[#4A6580] text-sm">
-                {selectedListingId ? 'Click Generate to create QR' : 'Select a listing to get started'}
+              <p className="text-[13px] text-[var(--muted)]">
+                {selectedId ? 'Click Generate to create QR' : 'Select a listing to get started'}
               </p>
             </div>
           ) : (
-            <div className="w-full">
+            <div className="flex flex-col gap-5 p-5">
               {/* QR image */}
-              <div className="flex justify-center mb-4">
-                {generatedQR.qr_url?.startsWith('data:') ? (
-                  <img src={generatedQR.qr_url} alt="QR Code" className="w-52 h-52" />
-                ) : generatedQR.qr_url ? (
-                  <img src={generatedQR.qr_url} alt="QR Code" className="w-52 h-52" />
+              <div className="flex justify-center">
+                {generatedQR.qr_url ? (
+                  <div className="relative">
+                    <img src={generatedQR.qr_url} alt="QR Code" className="object-contain p-2 bg-white w-52 h-52 rounded-xl" />
+                    <div
+                      className={`absolute -top-2 -right-2 w-5 h-5 rounded-full border-2 border-[var(--surface)] flex items-center justify-center text-[8px] font-black ${generatedQR.is_active ? 'bg-[var(--green)]' : 'bg-[var(--red)]'}`}
+                    >
+                      {generatedQR.is_active ? '✓' : '✗'}
+                    </div>
+                  </div>
                 ) : (
-                  <div className="w-52 h-52 bg-[#0D1821] border border-[#1A2D40] flex items-center justify-center">
-                    <span className="text-xs text-[#4A6580]">Configure Cloudinary to see preview</span>
+                  <div className="w-52 h-52 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center">
+                    <span className="text-[11px] text-[var(--dim)] text-center px-3">Configure Cloudinary to see QR preview</span>
                   </div>
                 )}
               </div>
 
-              {/* Listing name */}
-              <div className="mb-4 text-center">
-                <div className="text-xs font-bold text-white mb-0.5 truncate">{generatedQR.listing_title}</div>
-                <div className="text-[10px] text-[#4A6580] font-mono">{generatedQR.target_url}</div>
-              </div>
+              {/* Listing info */}
+              {selectedListing && (
+                <div className="text-center">
+                  <div className="text-[13px] font-bold text-[var(--white)] truncate">{generatedQR.listing_title || selectedListing.title}</div>
+                  <div className="text-[10px] text-[var(--dim)] mt-0.5 truncate" style={{ fontFamily: 'var(--font-mono)' }}>{generatedQR.target_url}</div>
+                </div>
+              )}
 
               {/* Stats */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-[#0D1821] p-3 text-center">
-                  <div className="text-xl font-black text-[#00D4C8]">{generatedQR.scan_count}</div>
-                  <div className="text-[10px] text-[#4A6580] uppercase tracking-wide">Total Scans</div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-[var(--card)] rounded-xl p-3 text-center border border-[var(--border)]">
+                  <div className="text-[1.4rem] font-extrabold text-[var(--teal)]" style={{ fontFamily: 'var(--font-syne)' }}>{generatedQR.scan_count ?? 0}</div>
+                  <div className="text-[9px] uppercase tracking-[0.15em] text-[var(--dim)]" style={{ fontFamily: 'var(--font-mono)' }}>Total Scans</div>
                 </div>
-                <div className="bg-[#0D1821] p-3 text-center">
-                  <div className={`text-sm font-bold ${generatedQR.is_active ? 'text-[#2ECC8A]' : 'text-[#FF4D6A]'}`}>
-                    {generatedQR.is_active ? '● Active' : '○ Inactive'}
+                <div className="bg-[var(--card)] rounded-xl p-3 text-center border border-[var(--border)]">
+                  <div className={`text-[1.4rem] font-extrabold ${generatedQR.is_active ? 'text-[var(--green)]' : 'text-[var(--red)]'}`} style={{ fontFamily: 'var(--font-syne)' }}>
+                    {generatedQR.is_active ? 'ON' : 'OFF'}
                   </div>
-                  <div className="text-[10px] text-[#4A6580] uppercase tracking-wide mt-0.5">Status</div>
+                  <div className="text-[9px] uppercase tracking-[0.15em] text-[var(--dim)]" style={{ fontFamily: 'var(--font-mono)' }}>Status</div>
                 </div>
               </div>
 
               {/* Actions */}
               <div className="flex gap-2">
-                <Button
-                  onClick={() => handleDownload(generatedQR.id, 'png')}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 flex items-center gap-1.5"
-                >
-                  <Download size={13} /> PNG
-                </Button>
-                <Button
-                  onClick={() => handleDownload(generatedQR.id, 'svg')}
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 flex items-center gap-1.5"
-                >
-                  <Download size={13} /> SVG
-                </Button>
-                <Button
-                  onClick={() => handleToggle(generatedQR.id)}
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center gap-1.5"
-                >
+                <motion.button whileHover={{ scale: 1.02 }} onClick={() => handleDownload(generatedQR.id, 'png')}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[var(--border)] text-[11px] font-bold text-[var(--muted)] hover:text-[var(--gold)] hover:border-[rgba(232,184,75,0.3)] transition-all">
+                  <Download size={12} /> PNG
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.02 }} onClick={() => handleDownload(generatedQR.id, 'svg')}
+                  className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-[var(--border)] text-[11px] font-bold text-[var(--muted)] hover:text-[var(--gold)] hover:border-[rgba(232,184,75,0.3)] transition-all">
+                  <Download size={12} /> SVG
+                </motion.button>
+                <motion.button whileHover={{ scale: 1.02 }} onClick={() => handleToggle(generatedQR.id)}
+                  className={`px-3 py-2 rounded-xl border text-[11px] font-bold transition-all ${generatedQR.is_active ? 'border-[rgba(240,64,96,0.3)] text-[var(--red)] hover:bg-[rgba(240,64,96,0.06)]' : 'border-[rgba(40,216,144,0.3)] text-[var(--green)] hover:bg-[rgba(40,216,144,0.06)]'}`}>
                   {generatedQR.is_active ? <EyeOff size={13} /> : <Eye size={13} />}
-                </Button>
+                </motion.button>
               </div>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
 
-      {/* ── All QR Codes ────────────────────────────────────────── */}
+      {/* ── All QR Codes grid ── */}
       {qrCodes.length > 0 && (
-        <div>
-          <div className="text-[10px] font-bold tracking-widest text-[#4A6580] uppercase mb-3">
-            All QR Codes — {qrCodes.length} total
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <div className="flex items-center gap-2 mb-3">
+            <div className="text-[9px] font-black tracking-[0.22em] uppercase text-[var(--dim)]" style={{ fontFamily: 'var(--font-mono)' }}>
+              All QR Codes
+            </div>
+            <div className="flex-1 h-px bg-[var(--border)]" />
+            <span className="text-[9px] text-[var(--dim)]" style={{ fontFamily: 'var(--font-mono)' }}>{qrCodes.length} total</span>
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {qrCodes.map(qr => (
-              <div
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3">
+            {qrCodes.map((qr, i) => (
+              <motion.div
                 key={qr.id}
-                className={`bg-[#111C28] border p-4 cursor-pointer transition-colors ${
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
+                onClick={() => { setGeneratedQR(qr); setSelectedId(qr.listing_id); }}
+                className={`flex items-center gap-3 p-3.5 rounded-2xl border cursor-pointer transition-all ${
                   generatedQR?.id === qr.id
-                    ? 'border-[#00D4C8]'
-                    : 'border-[#1A2D40] hover:border-[#4A6580]'
+                    ? 'border-[rgba(24,212,200,0.35)] bg-[rgba(24,212,200,0.05)]'
+                    : 'border-[var(--border)] bg-[var(--surface)] hover:border-[var(--border2)]'
                 }`}
-                onClick={() => {
-                  setGeneratedQR(qr);
-                  setSelectedListingId(qr.listing_id);
-                }}
               >
-                <div className="flex items-start gap-3">
-                  {/* Mini QR preview */}
-                  <div className="w-12 h-12 bg-[#0D1821] flex-shrink-0 flex items-center justify-center">
-                    {qr.qr_url && !qr.qr_url.startsWith('data:') ? (
-                      <img src={qr.qr_url} alt="" className="w-10 h-10" />
-                    ) : (
-                      <QrCode size={20} className="text-[#4A6580]" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-bold text-white truncate">{qr.listing_title}</div>
-                    <div className="text-[10px] text-[#4A6580] mt-0.5">{qr.city} · {qr.listing_type}</div>
-                    <div className="flex items-center gap-3 mt-1.5">
-                      <span className="text-[10px] text-[#00D4C8] font-mono">{qr.scan_count} scans</span>
-                      <span className={`text-[9px] font-bold px-1.5 py-0.5 ${
-                        qr.is_active
-                          ? 'bg-[rgba(46,204,138,0.1)] text-[#2ECC8A]'
-                          : 'bg-[rgba(255,77,106,0.1)] text-[#FF4D6A]'
-                      }`}>
-                        {qr.is_active ? 'ACTIVE' : 'OFF'}
-                      </span>
-                    </div>
+                <div className="w-11 h-11 rounded-xl bg-[var(--card)] border border-[var(--border)] flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {qr.qr_url ? (
+                    <img src={qr.qr_url} alt="" className="object-contain w-9 h-9" />
+                  ) : (
+                    <QrCode size={18} className="text-[var(--dim)]" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[12px] font-bold text-[var(--white)] truncate">{qr.listing_title || 'Listing'}</div>
+                  <div className="text-[10px] text-[var(--dim)] mt-0.5 truncate" style={{ fontFamily: 'var(--font-mono)' }}>{qr.city} · {qr.listing_type}</div>
+                </div>
+                <div className="flex-shrink-0 text-right">
+                  <div className="text-[12px] font-bold text-[var(--teal)]" style={{ fontFamily: 'var(--font-mono)' }}>{qr.scan_count ?? 0}</div>
+                  <div className={`text-[8px] font-black uppercase mt-0.5 ${qr.is_active ? 'text-[var(--green)]' : 'text-[var(--dim)]'}`} style={{ fontFamily: 'var(--font-mono)' }}>
+                    {qr.is_active ? 'LIVE' : 'OFF'}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

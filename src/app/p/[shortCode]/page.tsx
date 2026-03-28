@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { PropertyPageClient } from './PropertyPageClient';
+import PropertyPageClient from './PropertyPageClient';
 
 interface Props {
   params: { shortCode: string };
@@ -43,6 +43,7 @@ export default async function PropertyPage({ params, searchParams }: Props) {
   return (
     <PropertyPageClient
       listing={listing}
+      shortCode={params.shortCode}
       isUnavailable={searchParams.unavailable === 'true'}
     />
   );

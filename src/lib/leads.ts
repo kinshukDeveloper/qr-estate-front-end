@@ -1,3 +1,5 @@
+'use client';
+
 import api from './api';
 
 export type LeadStatus = 'new' | 'contacted' | 'interested' | 'not_interested' | 'converted' | 'lost';

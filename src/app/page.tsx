@@ -1,27 +1,27 @@
-import { Navbar }           from '@/components/landing/Navbar';
-import { Hero }             from '@/components/landing/Hero';
-import { CityStrip }        from '@/components/landing/CityStrip';
-import { HowItWorks }       from '@/components/landing/HowItWorks';
-import { Features }         from '@/components/landing/Features';
-import { PropertyPreview }  from '@/components/landing/PropertyPreview';
-import { Pricing }          from '@/components/landing/Pricing';
-import { Testimonials }     from '@/components/landing/Testimonials';
-import { FinalCTA }         from '@/components/landing/FinalCTA';
-import { Footer }           from '@/components/landing/Footer';
+import NavbarV3 from "@/components/landing/v3/Navbar";
+import HeroV3 from '@/components/landing/v3/Hero';
+import FeaturesV3 from '@/components/landing/v3/Features';
+import HowItWorksV3 from '@/components/landing/v3/HowItWorks';
+import PricingV3 from '../components/landing/v3/Pricing';
+import {
+  CityStripV3,
+  TestimonialsV3,
+  FinalCTAV3,
+  FooterV3,
+} from '@/components/landing/v3/Sections';
 
-export default function HomePage() {
+export default function LandingPageV3() {
   return (
-    <main className="bg-brand-bg min-h-screen">
-      <Navbar />
-      <Hero />
-      <CityStrip />
-      <HowItWorks />
-      <Features />
-      <PropertyPreview />
-      <Pricing />
-      <Testimonials />
-      <FinalCTA />
-      <Footer />
-    </main>
+    <>
+      <NavbarV3 />
+      <HeroV3 />
+      <CityStripV3 />
+      <FeaturesV3 />
+      <HowItWorksV3 />
+      <PricingV3 />
+       <TestimonialsV3 />
+      <FinalCTAV3 />
+      <FooterV3 />
+    </>
   );
 }

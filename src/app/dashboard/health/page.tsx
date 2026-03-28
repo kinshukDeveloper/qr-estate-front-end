@@ -13,7 +13,7 @@ function ScoreRing({ score }: { score: number }) {
   const dash = (score / 100) * circ;
 
   return (
-    <div className="relative w-36 h-36 flex items-center justify-center">
+    <div className="relative flex items-center justify-center w-36 h-36">
       <svg className="absolute inset-0 -rotate-90" width="144" height="144">
         <circle cx="72" cy="72" r={r} fill="none" stroke="#1A2D40" strokeWidth="8" />
         <circle
@@ -24,7 +24,7 @@ function ScoreRing({ score }: { score: number }) {
           style={{ transition: 'stroke-dasharray 1s ease' }}
         />
       </svg>
-      <div className="text-center z-10">
+      <div className="z-10 text-center">
         <div className="text-3xl font-black" style={{ color }}>{score}</div>
         <div className="text-[10px] text-[#4A6580] uppercase tracking-wide">Health Score</div>
       </div>
@@ -87,7 +87,7 @@ export default function HealthPage() {
   const statusColor = summary?.status === 'healthy' ? '#2ECC8A' : summary?.status === 'warning' ? '#FFB830' : '#FF4D6A';
 
   return (
-    <div className="space-y-6 animate-fade-in max-w-3xl">
+    <div className="max-w-3xl space-y-6 animate-fade-in">
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-black text-white">QR Health Monitor</h1>
@@ -127,7 +127,7 @@ export default function HealthPage() {
       </div>
 
       {/* Issue sections */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
         <IssueSection
           title="Dead / Inactive QR Codes"

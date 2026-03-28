@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// Routes that require authentication
-const PROTECTED_ROUTES = ['/dashboard', '/listings', '/qr', '/analytics', '/leads', '/billing', '/settings', '/callbacks', '/brand', '/portal', '/optimizer', '/builder'];
+const PROTECTED_ROUTES = [
+  '/dashboard', '/listings', '/qr', '/analytics', '/leads',
+  '/billing', '/settings', '/callbacks', '/brand', '/portal',
+  '/optimizer', '/builder',
+];
 
-// Routes only for unauthenticated users (redirect to dashboard if logged in)
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const authCookie = request.cookies.get('qr_estate_auth');
